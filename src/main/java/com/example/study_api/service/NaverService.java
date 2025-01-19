@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,13 @@ import java.util.List;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class NaverService {
 
     private final RestTemplate restTemplate;
 
+    public NaverService(RestTemplateBuilder builder) {
+        this.restTemplate = builder.build();
+    }
     public List<ProductDto> searchProduct(String item) {
         URI uri = UriComponentsBuilder
                 .fromUriString("https://openapi.naver.com")
@@ -38,6 +41,8 @@ public class NaverService {
                 .header("X-Naver-Client-Secret", "8ehcw0jCDX")
                 .build();
         ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+
+        // 아래 반환값인 product를 저장하도록 하는 메서드 작성하자.
 
         return fromJSONtoProduct(responseEntity.getBody());
     }

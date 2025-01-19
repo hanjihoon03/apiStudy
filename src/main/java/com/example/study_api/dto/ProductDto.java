@@ -1,7 +1,6 @@
 package com.example.study_api.dto;
 
 import com.example.study_api.entity.Product;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ public class ProductDto {
     private String image;
     private String brand;
     private int lprice;
-    private int hprice;
 
     public ProductDto(Product product) {
         this.title = product.getTitle();
@@ -24,7 +22,6 @@ public class ProductDto {
         this.image = product.getImage();
         this.brand = product.getBrand();
         this.lprice = product.getLprice();
-        this.hprice = product.getHprice();
     }
 
     public ProductDto(JSONObject itemJson) {
@@ -33,6 +30,5 @@ public class ProductDto {
         this.image = itemJson.getString("image");
         this.brand = itemJson.getString("brand");
         this.lprice = itemJson.getInt("lprice");
-        this.hprice = itemJson.getInt("hprice");
     }
 }

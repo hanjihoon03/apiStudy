@@ -18,7 +18,7 @@ public class NaverController {
     private final NaverService naverService;
 
     @GetMapping("/search")
-    public List<ProductDto> searchNaverShopping(@RequestParam String item) {
-        return naverService.searchProduct(item);
-    } 
+    public List<ProductDto> searchNaverShopping(@RequestParam String query) {
+        return naverService.searchProduct(query);
+    }
 }
