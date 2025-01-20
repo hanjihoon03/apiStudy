@@ -42,8 +42,6 @@ public class NaverService {
                 .build();
         ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
 
-        // 아래 반환값인 product를 저장하도록 하는 메서드 작성하자.
-
         return fromJSONtoProduct(responseEntity.getBody());
     }
 

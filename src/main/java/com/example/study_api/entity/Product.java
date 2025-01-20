@@ -1,5 +1,6 @@
 package com.example.study_api.entity;
 
+import com.example.study_api.dto.ProductDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,4 +26,20 @@ public class Product {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    public Product(ProductDto productDto, User user) {
+        this.title = productDto.getTitle();
+        this.link = productDto.getLink();
+        this.image = productDto.getImage();
+        this.brand = productDto.getBrand();
+        this.lprice = productDto.getLprice();
+        this.user = user;
+    }
+
+    public Product(ProductDto productDto) {
+        this.title = productDto.getTitle();
+        this.link = productDto.getLink();
+        this.image = productDto.getImage();
+        this.brand = productDto.getBrand();
+        this.lprice = productDto.getLprice();
+    }
 }

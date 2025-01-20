@@ -1,7 +1,7 @@
 package com.example.study_api.controller;
 
+import com.example.study_api.cond.ProductCond;
 import com.example.study_api.dto.ProductDto;
-import com.example.study_api.service.NaverService;
 import com.example.study_api.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,20 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/naver")
+@RequestMapping("/api/product")
 @RequiredArgsConstructor
-public class NaverController {
+public class ProductController {
 
-    private final NaverService naverService;
     private final ProductService productService;
 
     @GetMapping("/search")
-    public List<ProductDto> searchNaverShopping(@RequestParam String query) {
+    public List<ProductDto> searchPriceRangeSort(@RequestParam int min,
+                                                 @RequestParam int max,
+                                                 @RequestParam String sort) {
+        ProductCond.SortType sortType = productService.changeSort(sort);
+        ProductCond productCond = new ProductCond(min, max, sortType);
 
-        List<ProductDto> productDtoList = naverService.searchProduct(query);
-        productService.saveProduct(productDtoList);
-
-        return productDtoList;
+        return productService.searchPriceRangeSort(productCond);
 
     }
+
 }
