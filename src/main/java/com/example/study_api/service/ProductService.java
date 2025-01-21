@@ -7,8 +7,9 @@ import com.example.study_api.entity.User;
 import com.example.study_api.repository.ProductRepository;
 import com.example.study_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,5 +52,9 @@ public class ProductService {
         } else {
             return ProductCond.SortType.PRICE_DESC;
         }
+    }
+
+    public Page<ProductDto> searchPriceRangeSortPage(ProductCond productCond, Pageable pageable) {
+        return productRepository.searchPriceRangeSortPage(productCond, pageable).map(ProductDto::new);
     }
 }

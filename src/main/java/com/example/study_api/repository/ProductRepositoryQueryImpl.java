@@ -2,17 +2,20 @@ package com.example.study_api.repository;
 
 import com.example.study_api.cond.ProductCond;
 import com.example.study_api.entity.Product;
-import com.example.study_api.entity.QProduct;
-import com.example.study_api.entity.QUser;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.github.classgraph.TypeArgument;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
 import static com.example.study_api.entity.QProduct.*;
-import static com.example.study_api.entity.QUser.*;
 
 @RequiredArgsConstructor
 public class ProductRepositoryQueryImpl implements ProductRepositoryQuery{
@@ -22,11 +25,35 @@ public class ProductRepositoryQueryImpl implements ProductRepositoryQuery{
     @Override
     public List<Product> searchPriceRangeSort(ProductCond productCond) {
 
+        return getProductJPAQuery(productCond)
+                .fetch();
+    }
+
+    @Override
+    public Page<Product> searchPriceRangeSortPage(ProductCond productCond, Pageable pageable) {
+        JPAQuery<Product> query = getProductJPAQuery(productCond)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        List<Product> productList = query.fetch();
+
+        long productListSize = getCountProduct(productCond).fetch().getFirst();
+
+        return PageableExecutionUtils.getPage(productList, pageable, () -> productListSize);
+    }
+
+    private JPAQuery<Product> getProductJPAQuery(ProductCond productCond) {
         return jpaQueryFactory.select(product)
                 .from(product)
                 .where(getBetween(productCond))
-                .orderBy(createProductSpecifier(productCond.getSortType()))
-                .fetch();
+                .orderBy(createProductSpecifier(productCond.getSortType()));
+    }
+
+    private JPAQuery<Long> getCountProduct(ProductCond productCond) {
+        return jpaQueryFactory.select(Wildcard.count)
+                .from(product)
+                .where(getBetween(productCond))
+                .orderBy(createProductSpecifier(productCond.getSortType()));
     }
 
     private BooleanExpression getBetween(ProductCond productCond) {
